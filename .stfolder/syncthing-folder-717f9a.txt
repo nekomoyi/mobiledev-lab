@@ -1,0 +1,5 @@
+# This directory is a Syncthing folder marker.
+# Do not delete.
+
+folderID: m3hzs-fzzhk
+created: 2025-03-07T10:46:36+08:00
