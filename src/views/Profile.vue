@@ -114,6 +114,7 @@ const changeAvatar = async () => {
 </script>
 
 <template>
+  <nut-navbar title="个人信息" />
   <NutCell title="头像" is-link @click="avatarView = !avatarView">
     <template #desc>
       <NutAvatar size="large">
@@ -171,6 +172,7 @@ const changeAvatar = async () => {
       <span class="text-black">{{ userInfo.comments.length }}</span>
     </template>
   </NutCell>
+  <NutCell title="设置" is-link @click="router.push('/settings')" />
   <div class="flex justify-center">
     <NutButton type="danger" @click="logout">登出</NutButton>
   </div>

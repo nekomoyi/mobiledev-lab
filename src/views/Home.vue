@@ -1,5 +1,5 @@
 <script setup>
-import { ref, h, shallowRef, onMounted } from 'vue'
+import { ref, h, shallowRef } from 'vue'
 import AllArticles from './AllArticles.vue'
 import MyArticles from './MyArticles.vue'
 import MyComments from './MyComments.vue'
@@ -17,7 +17,8 @@ const tabComponents = [
   MyComments,
   Profile
 ]
-const activeTab = ref(3)
+
+const activeTab = ref(0)
 const currentComponent = shallowRef(tabComponents[activeTab.value])
 
 const tabSwitch = (_, idx) => {
