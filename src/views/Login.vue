@@ -1,7 +1,7 @@
 <script setup>
 import { useUserStore } from '@/stores/user.js'
 import axios from 'axios'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const username = ref('aa@wzu.edu.cn')

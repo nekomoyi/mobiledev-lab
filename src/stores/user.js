@@ -1,11 +1,9 @@
 import { defineStore } from "pinia";
 export const useUserStore = defineStore("user", {
-  state: () => {
-    return {
+  state: () => ({
       token: "",
       user: {}
-    }
-  },
+  }),
   persist: {
     key: 'userStore',
     storage: localStorage,
