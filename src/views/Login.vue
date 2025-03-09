@@ -1,27 +1,22 @@
 <script setup>
 import { useUserStore } from '@/stores/user.js'
-import axios from 'axios'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import api from '@/utils/api'
+import { showToast } from '@nutui/nutui'
+
+const user = useUserStore()
+const router = useRouter()
 
 const username = ref('aa@wzu.edu.cn')
 const password = ref('123456')
-const resp = ref('')
-const store = useUserStore()
-const router = useRouter()
 
-const login = () => {
-  axios.post('http://localhost:80/auth/jwt/login', {
-    username: username.value,
-    password: password.value
-  }, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  }).then(res => {
+const login = async () => {
+  let data = await api.login(username.value, password.value)
+  if (data.access_token) {
+    user.token = `${data.token_type} ${data.access_token}`
     router.push('/')
-    store.$patch({ token: res.data.token_type + ' ' + res.data.access_token })
-  })
+  } else showToast.fail(JSON.stringify(data))
 }
 </script>
 

@@ -6,6 +6,7 @@ import { useRouter } from "vue-router";
 import constants from "@/utils/constants";
 import { Eye } from "@nutui/icons-vue";
 import { showToast } from "@nutui/nutui";
+import api from "@/utils/api";
 const router = useRouter();
 const userInfo = ref({
   name: "",
@@ -80,21 +81,14 @@ const changePwd = async () => {
 const nameView = ref(false)
 const newName = ref("")
 
-const changeUser = async (name, avatar) => {
-  let resp = await fetch(`${constants.ENDPOINT}/users/rename/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": user.token
-    },
-    body: JSON.stringify({ name, avatar })
-  })
-  if (!resp.ok) {
-    showToast.fail(JSON.stringify(await resp.json()))
-    return false
-  } else {
+const changeUser = async(username, password) => {
+  const data = await api.userRename(username, password)
+  if (data.name) {
     showToast.success("修改成功")
     return true
+  } else {
+    showToast.fail(json.stringify(data))
+    return false
   }
 }
 
