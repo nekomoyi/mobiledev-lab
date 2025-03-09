@@ -1,7 +1,7 @@
 <script setup>
 import ImageUploader from "@/components/ImageUploader.vue";
 import { useUserStore } from "@/stores/user";
-import { onMounted, ref } from "vue";
+import { onActivated, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import constants from "@/utils/constants";
 import { Eye } from "@nutui/icons-vue";
@@ -39,6 +39,9 @@ const logout = () => {
 onMounted(() => {
   if (!user.token)
     router.push("/login")
+})
+
+onActivated(() => {
   getUserInfo()
 })
 
