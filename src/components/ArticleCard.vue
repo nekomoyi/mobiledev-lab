@@ -5,7 +5,7 @@ import {
   IconMore
 } from '@arco-design/web-vue/es/icon'
 import constants from '@/utils/constants'
-
+import { useRouter } from 'vue-router'
 const props = defineProps({
   src: String,
   title: String,
@@ -27,14 +27,26 @@ const props = defineProps({
 const formatDatetime = (datetime) => {
   return new Date(datetime).toLocaleString()
 }
+
+const router = useRouter()
+const emit = defineEmits(['onStar'])
 </script>
 
 <template>
   <ACard>
     <template #actions v-if="showMessage">
-      <span class="m-2 hover:text-blue-600"><IconThumbUp />{{ props.star }}</span>
-      <span class="m-2 hover:text-blue-600"><IconMessage />{{ props.comment_count }}</span>
-      <span class="m-2 hover:text-blue-600"><IconMore /></span>
+      <span class="m-2 hover:text-blue-600" @click="emit('onStar', props.id)">
+        <IconThumbUp />{{ props.star }}
+      </span>
+      <span
+        class="m-2 hover:text-blue-600"
+        @click="router.push(`/articles/${props.id}/comments`)"
+      >
+        <IconMessage />{{ props.comment_count }}
+      </span>
+      <span class="m-2 hover:text-blue-600">
+        <IconMore />
+      </span>
     </template>
     <template #cover>
       <div>

@@ -1,12 +1,13 @@
 <script setup>
 import { useUserStore } from '@/stores/user.js'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import api from '@/utils/api'
 import { showToast } from '@nutui/nutui'
 
 const user = useUserStore()
 const router = useRouter()
+const route = useRoute()
 
 const username = ref('aa@wzu.edu.cn')
 const password = ref('123456')
@@ -15,7 +16,14 @@ const login = async () => {
   let data = await api.login(username.value, password.value)
   if (data.access_token) {
     user.token = `${data.token_type} ${data.access_token}`
-    router.push('/')
+    let user_info = await api.userDetail()
+    if (user_info.id != undefined) user.user = user_info
+    else {
+      showToast.fail('获取用户信息失败')
+      return
+    }
+    console.log(user)
+    router.push(route.query.redirect || '/')
   } else showToast.fail(JSON.stringify(data))
 }
 </script>

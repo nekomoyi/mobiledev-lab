@@ -32,6 +32,12 @@ const pullLoad = async () => {
   pullLoading.value = false
 }
 
+const refreshAll = async () => {
+  let { limit, offset } = pagination.value
+  let data = await api.getArticles(0, offset + limit)
+  articles.value = data
+}
+
 usePersistentScroll()
 
 onMounted(async () => {
@@ -46,10 +52,7 @@ const autoRefreshTimer = ref(null)
 onActivated(() => {
   if (autoRefresh) {
     autoRefreshTimer.value = setInterval(async () => {
-      let { limit } = pagination.value
-      let data = await api.getArticles(0, limit)
-      data = data.filter((a) => !articles.value.find((b) => a.id === b.id))
-      articles.value = [...data, ...articles.value]
+      await refreshAll()
     }, refreshInterval)
   }
 })
@@ -61,6 +64,11 @@ onDeactivated(() => {
 onUnmounted(() => {
   clearInterval(autoRefreshTimer.value)
 })
+
+const star = async (id) => {
+  await api.starArticle(id)
+  await refreshAll()
+}
 </script>
 <template>
   <NutInfiniteLoading v-model="infinityLoading" :has-more="hasMore" @load-more="loadMore">
@@ -70,6 +78,7 @@ onUnmounted(() => {
         :key="a.id"
         v-bind="a"
         class="m-3"
+        @onStar="star"
       />
     </NutPullRefresh>
   </NutInfiniteLoading>

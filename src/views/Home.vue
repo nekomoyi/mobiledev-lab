@@ -1,10 +1,11 @@
 <script setup>
-import { ref, h, shallowRef } from 'vue'
+import { ref, h, shallowRef, onMounted, watch } from 'vue'
 import AllArticles from './AllArticles.vue'
 import MyArticles from './MyArticles.vue'
 import MyComments from './MyComments.vue'
 import Profile from './Profile.vue'
 import { Find, Home, Comment, My } from '@nutui/icons-vue'
+import { useRoute, useRouter } from 'vue-router'
 const tabItems = ref([
   { title: '所有文章', icon: h(Find), name: 'all-articles' },
   { title: '我的文章', icon: h(Home), name: 'my-articles' },
@@ -20,10 +21,31 @@ const tabComponents = [
 
 const activeTab = ref(0)
 const currentComponent = shallowRef(tabComponents[activeTab.value])
+const route = useRoute()
+const router = useRouter()
 
 const tabSwitch = (_, idx) => {
-  currentComponent.value = tabComponents[idx]
+  router.push({ query: { tab: tabItems.value[idx].name } })
 }
+
+onMounted(() => {
+  const tab = route.query.tab
+  if (tab) {
+    const idx = tabItems.value.findIndex(t => t.name === tab)
+    if (idx > -1) {
+      activeTab.value = idx
+      currentComponent.value = tabComponents[idx]
+    }
+  }
+})
+
+watch(() => route.query.tab, (tab) => {
+  const idx = tabItems.value.findIndex(t => t.name === tab)
+  if (idx > -1) {
+    activeTab.value = idx
+    currentComponent.value = tabComponents[idx]
+  }
+})
 </script>
 
 <template>
