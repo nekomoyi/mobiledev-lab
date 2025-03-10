@@ -71,6 +71,7 @@ const star = async (id) => {
 }
 </script>
 <template>
+  <NutNavbar title="所有文章" />
   <NutInfiniteLoading v-model="infinityLoading" :has-more="hasMore" @load-more="loadMore">
     <NutPullRefresh v-model="pullLoading" @refresh="pullLoad">
       <ArticleCard

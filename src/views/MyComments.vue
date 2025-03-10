@@ -45,6 +45,7 @@ onActivated(async () => {
 })
 </script>
 <template>
+  <NutNavbar title="我的评论" />
   <div v-if="!user.token">
     <NutEmpty image="error" description="请先登录" />
     <div class="flex justify-center">

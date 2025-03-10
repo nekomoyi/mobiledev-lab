@@ -32,7 +32,8 @@ const getUserInfo = async () => {
 }
 
 const logout = () => {
-  user.$patch({ token: "", user: {} })
+  user.token = ""
+  user.user = {}
   router.push("/login")
 }
 
@@ -126,6 +127,7 @@ const changeAvatar = async () => {
     <template #title>
       <ImageUploader
         @onSuccess="(resp) => { newAvatar = resp.src }"
+        @onDelete="async (src) => { await api.deleteImage(src) }"
       />
     </template>
     <template #desc>

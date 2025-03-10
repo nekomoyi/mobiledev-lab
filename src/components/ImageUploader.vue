@@ -1,7 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import { computed } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
 import imageCompression from "browser-image-compression";
 import constants from "@/utils/constants";
 import { useUserStore } from "@/stores/user";
@@ -14,7 +12,7 @@ const props = defineProps({
   },
   maxWidthOrHeight: {
     type: Number,
-    default: 800,
+    default: 1000,
   },
 });
 
@@ -25,10 +23,7 @@ const compressOptions = {
   useWebWorker: true,
 }
 const needCompression = ref(true)
-const imgPath = ref("")
-const imgSrc = computed(() => {
-  return `${constants.ENDPOINT}${imgPath.value}`
-})
+const imgPath = defineModel()
 const fileList = ref([])
 
 const onSuccess = ({ responseText }) => {
@@ -39,10 +34,7 @@ const onSuccess = ({ responseText }) => {
 }
 
 const onDelete = async (_) => {
-  await fetch(`${constants.ENDPOINT}/deleteimage-bypath${imgPath.value}`, {
-    method: "DELETE",
-    headers: headToken,
-  })
+  emit("onDelete", imgPath.value)
   imgPath.value = ""
 }
 
@@ -61,6 +53,11 @@ const compressImage = async (files) => {
     console.error("Failed to compress image", error)
   }
 }
+
+onMounted(() => {
+  if (imgPath.value)
+    fileList.value.push({ url: `${constants.ENDPOINT}${imgPath.value}`, name: "img", status: 'success', type: 'image' })
+})
 </script>
 
 <template>
@@ -72,6 +69,7 @@ const compressImage = async (files) => {
       @success="onSuccess"
       @delete="onDelete"
       :before-upload="compressImage"
+      :maximum="1"
     />
   </div>
 </template>

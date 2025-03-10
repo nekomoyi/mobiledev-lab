@@ -122,5 +122,89 @@ export default {
     })
     let data = await resp.json()
     return data
+  },
+  deleteImage: async (imagePath) => {
+    let resp = await fetch(`${constants.ENDPOINT}/deleteimage-bypath${imagePath}`, {
+      method: "DELETE",
+      headers: {
+        'Authorization': useUserStore().token
+      },
+    })
+    let data = await resp.json()
+    return data
+  },
+  deleteImageById: async (imageId) => {
+    let resp = await fetch(`${constants.ENDPOINT}/deleteimage-byid/${imageId}`, {
+      method: "DELETE",
+      headers: {
+        'Authorization': useUserStore().token
+      },
+    })
+    let data = await resp.json()
+    return data
+  },
+  createArticle: async (articleData) => {
+    let resp = await fetch(`${constants.ENDPOINT}/items/`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': useUserStore().token
+      },
+      body: JSON.stringify(articleData)
+    })
+    let data = await resp.json()
+    return data
+  },
+  updateArticleById: async (articleId, articleData) => {
+    let resp = await fetch(`${constants.ENDPOINT}/items/put/${articleId}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': useUserStore().token
+      },
+      body: JSON.stringify(articleData)
+    })
+    let data = await resp.json()
+    return data
+  },
+  uploadImageToArticle: async (articleId, imageData) => {
+    let resp = await fetch(`${constants.ENDPOINT}/uploadimage/${articleId}`, {
+      method: "POST",
+      headers: {
+        'Authorization': useUserStore().token
+      },
+      body: JSON.stringify(imageData)
+    })
+    let data = await resp.json()
+    return data
+  },
+  updateImageById: async (imageId, imageData) => {
+    let resp = await fetch(`${constants.ENDPOINT}/modifyimage/${imageId}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': useUserStore().token
+      },
+      body: JSON.stringify(imageData)
+    })
+    let data = await resp.json()
+    return data
+  },
+  uploadOrUpdateImageToArticleById: async (articleId, imageData) => {
+    let resp = await fetch(`${constants.ENDPOINT}/modifyimage/${articleId}/${imageData.id}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': useUserStore().token
+      },
+      body: JSON.stringify({
+        name: imageData.name,
+        url: imageData.url,
+        img_content: imageData.img_content,
+        order: imageData.order,
+      })
+    })
+    let data = await resp.json()
+    return data
   }
 }

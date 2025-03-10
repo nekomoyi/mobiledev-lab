@@ -41,6 +41,7 @@ onActivated(() => {
 })
 </script>
 <template>
+  <NutNavbar title="我的文章" />
   <NutSearchbar
     v-model="searchStr"
     placeholder="搜索"
@@ -53,7 +54,7 @@ onActivated(() => {
       <NutButton
         type="danger"
         size="mini"
-        @click="console.log('new article')"
+        @click="router.push('/new-article')"
       >
         发布文章
       </NutButton>
@@ -72,7 +73,7 @@ onActivated(() => {
         <AListItemMeta
           :title="`${item.owner.name} ${new Date(item.modify_time).toLocaleDateString()}`"
           :description="item.title"
-          @click="router.push(`/articles/${item.uuid}`)"
+          @click="router.push(`/articles/${item.id}`)"
         />
         <template #actions>
           <div class="w-[40vw] pt-1 flex items-center">
