@@ -114,7 +114,7 @@ const changeAvatar = async () => {
 </script>
 
 <template>
-  <nut-navbar title="个人信息" />
+  <NutNavbar title="22211860216 卢锦轩" />
   <NutCell title="头像" is-link @click="avatarView = !avatarView">
     <template #desc>
       <NutAvatar size="large">

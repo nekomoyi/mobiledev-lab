@@ -52,7 +52,7 @@ onActivated(async () => {
     </div>
   </div>
   <NutEmpty image="empty" description="没有评论" v-else-if="comments.length == 0" />
-  <AList>
+  <AList v-else>
     <AListItem
       v-for="c in comments"
       :key="c.id"

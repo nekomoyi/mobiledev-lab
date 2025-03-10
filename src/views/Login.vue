@@ -29,6 +29,7 @@ const login = async () => {
 </script>
 
 <template>
+  <NutNavbar title="登录" />
   <nut-row type="flex" justify="center" class="pt-5">
     <nut-col :span="18" fill>
       <nut-image
@@ -58,6 +59,10 @@ const login = async () => {
           class="shadow-lg"
         >登录</nut-button>
       </div>
+      <span
+        class="text-sm text-gray-400 flex justify-center pt-3"
+        @click="router.push('/')"
+      >游客模式</span>
     </nut-col>
   </nut-row>
 </template>

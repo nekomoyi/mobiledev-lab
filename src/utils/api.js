@@ -107,5 +107,20 @@ export default {
     })
     let data = await resp.json()
     return data
+  },
+  getUserArticles: async (uuid='', keyword = '') => {
+    let resp = await fetch(`${constants.ENDPOINT}/items/users/${uuid}?keyword=${keyword}`)
+    let data = await resp.json()
+    return data
+  },
+  deleteArticle: async (articleId) => {
+    let resp = await fetch(`${constants.ENDPOINT}/deleteitem-byid/${articleId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': useUserStore().token
+      }
+    })
+    let data = await resp.json()
+    return data
   }
 }
