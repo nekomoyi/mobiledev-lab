@@ -1,7 +1,9 @@
 <script setup>
+import { useLikeStore } from '@/stores/like'
 import { useRefreshStore } from '@/stores/refresh'
 import api from '@/utils/api'
 import { usePersistentScroll } from '@/utils/scroll'
+import { showToast } from '@nutui/nutui'
 import { ref, onMounted, onActivated, onDeactivated, onUnmounted } from 'vue'
 
 const pagination = ref({
@@ -65,9 +67,15 @@ onUnmounted(() => {
   clearInterval(autoRefreshTimer.value)
 })
 
+const like = useLikeStore()
+
 const star = async (id) => {
-  await api.starArticle(id)
-  await refreshAll()
+  if (like.isValidLike(id)) {
+    await api.starArticle(id)
+    await refreshAll()
+    like.like(id)
+  } else
+    showToast.fail('今天已经点赞过了')
 }
 </script>
 <template>

@@ -33,7 +33,7 @@ const emit = defineEmits(['onStar'])
 </script>
 
 <template>
-  <ACard @click="router.push(`/articles/${props.id}`)">
+  <ACard>
     <template #actions v-if="showMessage">
       <span class="m-2 hover:text-blue-600" @click="emit('onStar', props.id)">
         <IconThumbUp />{{ props.star }}
@@ -45,11 +45,11 @@ const emit = defineEmits(['onStar'])
         <IconMessage />{{ props.comment_count }}
       </span>
       <span class="m-2 hover:text-blue-600">
-        <IconMore />
+        <IconMore @click="router.push(`/articles/${props.id}`)" />
       </span>
     </template>
     <template #cover>
-      <div>
+      <div @click="router.push(`/articles/${props.id}`)">
         <img :src="`${constants.ENDPOINT}${props.src}`" alt="cover" />
       </div>
     </template>
