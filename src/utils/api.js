@@ -57,8 +57,11 @@ export default {
     let data = await resp.json()
     return data
   },
-  getArticles: async (offset=0, limit=100) => {
-    let resp = await fetch(`${constants.ENDPOINT}/items/auto-refresh/0?skip=${offset}&limit=${limit}`)
+  getArticles: async (offset = 0, limit = 100, keyword = '') => {
+    let url = `${constants.ENDPOINT}/items/auto-refresh/0?skip=${offset}&limit=${limit}`
+    if (keyword)
+      url += `&keyword=${keyword}`
+    let resp = await fetch(url)
     let data = await resp.json()
     return data
   },
