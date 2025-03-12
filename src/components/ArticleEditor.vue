@@ -1,6 +1,8 @@
 <script setup>
 import ImageUploader from './ImageUploader.vue';
 import api from '@/utils/api';
+import { RectUp, RectDown } from '@nutui/icons-vue';
+
 const article = defineModel('article')
 
 
@@ -43,9 +45,22 @@ const addImageContent = () => {
   })
 }
 
+const moveItem = (item, direction) => {
+  const idx = article.value.images.indexOf(item)
+  if (idx === 0 && direction === -1) return
+  if (idx === article.value.images.length - 1 && direction === 1) return
+  const temp = article.value.images[idx]
+  article.value.images[idx] = article.value.images[idx + direction]
+  article.value.images[idx + direction] = temp
+  
+  for (let i = 0; i < article.value.images.length; i++)
+    article.value.images[i].order = i
+
+  console.log(article.value.images)
+}
+
 defineExpose({ saveArticle })
 const emit = defineEmits(['onSave'])
-
 </script>
 
 <template>
@@ -86,6 +101,9 @@ const emit = defineEmits(['onSave'])
       v-for="item in article.images"
       :key="item.id"
     >
+      <div class="ml-5 text-gray-500 mt-5">
+        <RectUp @click="moveItem(item, -1)" />
+      </div>
       <NutTextarea
         v-model="item.img_content"
         :rows="3"
@@ -102,6 +120,9 @@ const emit = defineEmits(['onSave'])
           @click="() => deleteImageContent(item)"
         >删除</NutButton>
       </template>
+      <div class="ml-5 text-gray-500">
+        <RectDown @click="moveItem(item, 1)" />
+      </div>
     </NutSwipe>
   </NutSwipeGroup>
   <NutSpace :gutter="20" class="m-3">

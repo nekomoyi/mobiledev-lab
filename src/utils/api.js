@@ -68,6 +68,8 @@ export default {
   getArticle: async (articleId) => {
     let resp = await fetch(`${constants.ENDPOINT}/items/${articleId}`)
     let data = await resp.json()
+    if (data.images)
+      data.images.sort((a, b) => a.order - b.order)
     return data
   },
   comment: async (articleId, commentData) => {
