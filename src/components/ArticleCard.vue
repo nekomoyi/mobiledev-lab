@@ -6,12 +6,15 @@ import {
 } from '@arco-design/web-vue/es/icon'
 import constants from '@/utils/constants'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+
 const props = defineProps({
   src: String,
   title: String,
   description: String,
   star: Number,
   id: Number,
+  owner_id: String,
   modify_time: String,
   comment_count: Number,
   showMessage: {
@@ -30,6 +33,13 @@ const formatDatetime = (datetime) => {
 
 const router = useRouter()
 const emit = defineEmits(['onStar'])
+
+const toUserArticles = (id) => {
+  if (useUserStore().user.uuid === id)
+    router.push('/?tab=my-articles')
+  else
+    router.push(`/users/${id}/articles`)
+}
 </script>
 
 <template>
@@ -55,7 +65,7 @@ const emit = defineEmits(['onStar'])
     </template>
     <ACardMeta :title="props.title" :description="props.owner.name">
       <template #avatar>
-        <AAvatar :size="24">
+        <AAvatar :size="24" @click="toUserArticles(props.owner_id)">
           <img :src="`${constants.ENDPOINT}${props.owner.avatar}`" />
         </AAvatar>
         <ATypographyText class="pl-2">{{ formatDatetime(props.modify_time) }}</ATypographyText>

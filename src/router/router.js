@@ -6,6 +6,7 @@ import Settings from "@/views/Settings.vue"
 import Comments from "@/views/Comments.vue"
 import Article from "@/views/Article.vue"
 import NewArticle from "@/views/NewArticle.vue"
+import MyArticles from "@/views/MyArticles.vue"
 
 const routes = [
     { path: '/', component: Home, name: 'home' },
@@ -14,7 +15,8 @@ const routes = [
     { path: '/settings', component: Settings, name: 'settings' },
     { path: '/new-article', component: NewArticle, name: 'new-article' },
     { path: '/articles/:id', component: Article, name: 'article' },
-    { path: '/articles/:id/comments', component: Comments, name: 'comments' }
+    { path: '/articles/:id/comments', component: Comments, name: 'comments' },
+    { path: '/users/:uuid/articles', component: MyArticles, name: 'user-articles' }
 ]
 
 const router = createRouter({

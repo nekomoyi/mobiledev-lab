@@ -1,21 +1,26 @@
 <script setup>
-import { onActivated, ref } from 'vue'
+import { onActivated, onMounted, ref } from 'vue'
 import { Search2 } from '@nutui/icons-vue'
 import api from '@/utils/api'
 import { useUserStore } from '@/stores/user'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { IconThumbUp, IconMessage, IconDelete } from '@arco-design/web-vue/es/icon'
 import constants from '@/utils/constants'
 import { showDialog } from '@nutui/nutui'
 
 const user = useUserStore()
 const router = useRouter()
+const route = useRoute()
 const articles = ref([])
 const searchStr = ref('')
 
+const uuid = route.params.uuid ?? user.user.uuid
+const myArticles = user.user.uuid === uuid
+
 const getArticles = async () => {
+  console.log(uuid)
   articles.value = await api.getUserArticles(
-    user.user.uuid, searchStr.value
+    uuid, searchStr.value
   )
 }
 
@@ -36,12 +41,14 @@ const deleteArticle = (article) => {
   })
 }
 
-onActivated(() => {
-  if (user.token) getArticles()
+onMounted(() => {
+  getArticles()
 })
+
 </script>
 <template>
-  <NutNavbar title="我的文章" />
+  <NutNavbar title="我的文章" v-if="myArticles" />
+  <NutNavbar title="Ta的文章" v-else left-show @click-back="router.back()" />
   <NutSearchbar
     v-model="searchStr"
     placeholder="搜索"
@@ -50,7 +57,7 @@ onActivated(() => {
     <template #rightin>
       <Search2 @click="getArticles" />
     </template>
-    <template #rightout>
+    <template #rightout v-if="myArticles">
       <NutButton
         type="danger"
         size="mini"
@@ -60,7 +67,7 @@ onActivated(() => {
       </NutButton>
     </template>
   </NutSearchbar>
-  <div v-if="!user.token">
+  <div v-if="!user.token && myArticles">
     <NutEmpty image="error" description="未登录" />
     <div class="flex justify-center">
         <NutButton type="info" @click="router.push(`/login?redirect=${router.currentRoute.value.fullPath}`)">去登录</NutButton>
@@ -78,20 +85,20 @@ onActivated(() => {
         <template #actions>
           <div class="w-[40vw] pt-1 flex items-center">
             <NutRow type="flex" justify="space-between">
-              <NutCol :span="8">
+              <NutCol>
                 <span><IconThumbUp class="pr-1" size="16" />{{ item.star }}</span>
               </NutCol>
-              <NutCol :span="8" @click="router.push(`/articles/${item.id}/comments`)">
+              <NutCol @click="router.push(`/articles/${item.id}/comments`)">
                 <span><IconMessage class="pr-1" size="16" />{{ item.comment_count }}</span>
               </NutCol>
-              <NutCol :span="8" @click="deleteArticle(item)">
+              <NutCol @click="deleteArticle(item)" v-if="myArticles">
                 <span><IconDelete class="pr-1" size="16" /></span>
               </NutCol>
             </NutRow>
           </div>
         </template>
         <template #extra>
-          <div class=" ">
+          <div>
             <img
               :src="`${constants.ENDPOINT}${item.src}`"
               @click="router.push(`/articles/${item.id}`)"
