@@ -104,8 +104,8 @@ export default {
     return data
   },
   starArticle: async (articleId) => {
-    let resp = await fetch(`${constants.ENDPOINT}/items/put/addstar/${articleId}`, {
-      method: 'POST',
+    let resp = await fetch(`${constants.ENDPOINT}/items/${articleId}/star`, {
+      method: 'PUT',
       headers: {
         'Authorization': useUserStore().token
       }

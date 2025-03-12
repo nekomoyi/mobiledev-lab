@@ -72,12 +72,11 @@ onUnmounted(() => {
 const like = useLikeStore()
 
 const star = async (id) => {
-  if (like.isValidLike(id)) {
-    await api.starArticle(id)
-    await refreshAll()
-    like.like(id)
-  } else
-    showToast.fail('今天已经点赞过了')
+  let data = await api.starArticle(id)
+  if (data.likes) {
+    let idx = articles.value.findIndex((a) => a.id === id)
+    articles.value[idx] = data
+  }
 }
 </script>
 <template>

@@ -5,13 +5,11 @@ export const useLikeStore = defineStore("like", {
   }),
   actions: {
     like(id) {
-      this.likes.push({
-        id,
-        timestamp: Date.now()
-      })
+      // this.likes.push({ id, timestamp: Date.now() })
     },
     isValidLike(id) {
-      return !this.likes.some(like => like.id === id && like.timestamp > Date.now() - 24 * 60 * 60 * 1000)
+      // return !this.likes.some(like => like.id === id && like.timestamp > Date.now() - 24 * 60 * 60 * 1000)
+      return true
     },
     clean() {
       this.likes = this.likes.filter(like => like.timestamp > Date.now() - 24 * 60 * 60 * 1000)
