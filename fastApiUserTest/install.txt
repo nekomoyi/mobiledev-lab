@@ -1,0 +1,10 @@
+#在pycharm Terminal 控制台中输入以下命令，可以手动安装相应的包
+
+# 安装requirements.txt文件中的依赖包可以使用
+pip install -r requirements.txt
+
+# 以下命令，可以把环境的依赖写入requirements.txt文件
+pip freeze > requirements.txt
+
+# pyinstaller 打包,打包失败
+pyinstaller  --add-data "images;images"  --config=pyinstaller.conf pack.py

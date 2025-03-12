@@ -1,0 +1,9 @@
+.idea
+__pycache
+.venv
+build
+dist
+images/*
+*.db
+*.pyc
+.DS_Store
