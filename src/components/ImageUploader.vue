@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import imageCompression from "browser-image-compression";
 import constants from "@/utils/constants";
 import { useUserStore } from "@/stores/user";
@@ -57,6 +57,11 @@ const compressImage = async (files) => {
 onMounted(() => {
   if (imgPath.value)
     fileList.value.push({ url: `${constants.ENDPOINT}${imgPath.value}`, name: "img", status: 'success', type: 'image' })
+})
+
+watch(() => imgPath.value, (newVal) => {
+  if (newVal == "")
+    fileList.value = []
 })
 </script>
 

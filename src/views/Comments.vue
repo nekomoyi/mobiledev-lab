@@ -3,11 +3,11 @@ import router from '@/router/router'
 import { useUserStore } from '@/stores/user'
 import api from '@/utils/api'
 import constants from '@/utils/constants'
-import { ref, onMounted, computed, onActivated, onDeactivated, onUnmounted } from 'vue'
+import { ref, onMounted, computed, onDeactivated, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { IconMessage, IconDelete } from '@arco-design/web-vue/es/icon'
 import { useRefreshStore } from '@/stores/refresh'
 import { showDialog, showToast } from '@nutui/nutui'
+import ImageUploader from '@/components/ImageUploader.vue'
 const route = useRoute()
 const user = useUserStore()
 const refresh = useRefreshStore()
@@ -20,6 +20,8 @@ const comment = ref({
   content: '',
   hint: '',
   order: 0,
+  url: '',
+  parent_id: null,
 })
 
 let refreshRef = ref(null)
@@ -38,6 +40,8 @@ const sendComment = async () => {
     await api.comment(articleId, comment.value)
     comment.value.content = ''
     comment.value.hint = ''
+    comment.value.url = ''
+    comment.value.parent_id = null
     fetchArticle()
   } catch (error) {
     showToast.fail('评论失败:', error)
@@ -59,6 +63,16 @@ const deleteComment = (comment) => {
       }
     }
   })
+}
+
+const hintComment = (c) => {
+  comment.value.hint = `${c.owner.name}：${c.content}`
+  comment.value.parent_id = c.id
+}
+
+const clearHint = () => {
+  comment.hint = ''
+  comment.parent_id = null
 }
 
 onMounted(() => {
@@ -86,26 +100,11 @@ onUnmounted(() => {
   <NutEmpty v-if="noComments" :image="articleExist ? 'empty' : 'error'"
     :description="articleExist ? '暂无评论' : '文章不存在'" />
   <div>
-    <AComment align="right" v-for="c in article.comments" :key="c.id" :author="c.owner.name"
-      :avatar="`${constants.ENDPOINT}${c.owner.avatar}`" :datetime="new Date(c.create_time).toLocaleString()"
-      class="m-3">
-      <template #actions>
-        <span @click="comment.hint = `引用: ${c.content}@${c.owner.name}`">
-          <IconMessage class="mr-1" />引用
-        </span>
-        <span v-if="user.user.uuid == c.owner_id" @click="deleteComment(c)">
-          <IconDelete class="mr-1" />删除
-        </span>
-      </template>
-      <template #content>
-        <div v-if="c.hint" class="text-gray-500">
-          {{ c.hint }}
-        </div>
-        <div>
-          {{ c.content }}
-        </div>
-      </template>
-    </AComment>
+    <Comment
+      v-model:comments="article.comments"
+      @onDelete="(c) => deleteComment(c)"
+      @onHint="(c) => hintComment(c)"
+    />
   </div>
   <NutCell v-if="!user.token" title="未登录，不能评论" is-link
     @click="router.push('/login?redirect=' + router.currentRoute.value.fullPath)" />
@@ -118,11 +117,12 @@ onUnmounted(() => {
       <div v-if="comment.hint" class="text-gray-500">
         <AInput v-model="comment.hint" readonly>
           <template #append>
-            <span @click="comment.hint = ''">取消引用</span>
+            <span @click="clearHint">取消回复</span>
           </template>
         </AInput>
       </div>
       <AInput placeholder="请输入评论" v-model="comment.content" />
+      <ImageUploader v-model="comment.url" class="pt-3" />
     </template>
   </AComment>
 </template>

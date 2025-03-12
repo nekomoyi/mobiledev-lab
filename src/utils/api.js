@@ -70,6 +70,8 @@ export default {
     let data = await resp.json()
     if (data.images)
       data.images.sort((a, b) => a.order - b.order)
+    if (data.comments)
+      data.comments = data.comments.filter(comment => comment.parent_id === null)
     return data
   },
   comment: async (articleId, commentData) => {
