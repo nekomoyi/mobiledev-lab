@@ -262,5 +262,10 @@ export default {
     })
     let data = await resp.json()
     return data
+  },
+  getRecommends: async () => {
+    let resp = await fetch(`${constants.ENDPOINT}/recommends/`)
+    let data = await resp.json()
+    return data
   }
 }

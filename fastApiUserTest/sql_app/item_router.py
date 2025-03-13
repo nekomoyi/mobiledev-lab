@@ -401,3 +401,10 @@ def get_follow_unread(
     uuid = str(auth_user.id)
     items = crud.get_follow_unread(db, uuid)
     return items
+
+@app.get("/recommends/", response_model=list[schemas.Item])
+def get_recommends(
+    db: Session = Depends(get_db),
+):
+    items = crud.get_recomment_articles(db)
+    return items

@@ -321,3 +321,7 @@ def get_follow_unread(db: Session, uuid: str):
                 items.append(item)
     items.sort(key=lambda x: x.modify_time, reverse=True)
     return items
+
+def get_recomment_articles(db: Session):
+    items = db.query(models.Item).order_by(models.Item.star.desc()).limit(5).all()
+    return items

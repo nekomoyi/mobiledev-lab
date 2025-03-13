@@ -18,7 +18,6 @@ const uuid = route.params.uuid ?? user.user.uuid
 const myArticles = user.user.uuid === uuid
 
 const getArticles = async () => {
-  console.log(uuid)
   articles.value = await api.getUserArticles(
     uuid, searchStr.value
   )
