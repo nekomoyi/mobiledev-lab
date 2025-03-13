@@ -170,3 +170,15 @@ class ReadLog(BaseModel):
     create_time:datetime.datetime
     class Config:
         from_attributes = True
+
+class Follow(BaseModel):
+    follower_id:str
+    followee_id:str
+    create_time:datetime.datetime
+    follower: UserBase
+    followee: UserBase
+class UserFollowDetail(User):
+    followers: list[Follow] = []
+    followees: list[Follow] = []
+    class Config:
+        from_attributes = True

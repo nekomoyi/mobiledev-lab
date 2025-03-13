@@ -291,3 +291,33 @@ def update_read_log(db:Session,uuid:str,item_id:int):
 def is_read(db:Session,uuid:str,item_id:int):
     db_item = db.query(models.ReadLog).filter(models.ReadLog.owner_id==uuid).filter(models.ReadLog.item_id==item_id).first()
     return True if db_item else False
+
+def update_follow(db:Session,follower_id:str,followee_id:str):
+    db_user = db.query(models.User).filter(models.User.uuid==follower_id).first()
+    db_followee = db.query(models.User).filter(models.User.uuid==followee_id).first()
+    if not db_user or not db_followee:
+        raise ValueError("follower or followee not exist")
+    
+    db_follow = db.query(models.Follow).filter(models.Follow.follower_id==follower_id).filter(models.Follow.followee_id==followee_id).first()
+    if db_follow:
+        db.delete(db_follow)
+    else:
+        db_follow = models.Follow(follower_id=follower_id, followee_id=followee_id, create_time=datetime.now())
+        db.add(db_follow)
+    db.commit()
+    
+def get_follow_unread(db: Session, uuid: str):
+    user = db.query(models.User).filter(models.User.uuid==uuid).first()
+    if not user:
+        raise ValueError("user not exist")
+    followees = user.followees
+    user_read = user.read
+    user_read_item_ids = [item.item_id for item in user_read]
+    items = []
+    print("user_read_item_ids",user_read_item_ids)
+    for followee in followees:
+        for item in followee.followee.items:
+            if item.id not in user_read_item_ids:
+                items.append(item)
+    items.sort(key=lambda x: x.modify_time, reverse=True)
+    return items

@@ -234,4 +234,33 @@ export default {
     let data = await resp.json()
     return data
   },
+  getFollowList: async () => {
+    let resp = await fetch(`${constants.ENDPOINT}/user/follow`, {
+      headers: {
+        'Authorization': useUserStore().token
+      }
+    })
+    let data = await resp.json()
+    return data
+  },
+  updateFollow: async (followee_id) => {
+    let resp = await fetch(`${constants.ENDPOINT}/user/follow/${followee_id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': useUserStore().token
+      }
+    })
+    let data = await resp.json()
+    return data
+  },
+  getFollowUnread: async () => {
+    let resp = await fetch(`${constants.ENDPOINT}/user/follow/unread/`, {
+      headers: {
+        'Authorization': useUserStore().token
+      }
+    })
+    let data = await resp.json()
+    return data
+  }
 }

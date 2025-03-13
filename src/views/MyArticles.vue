@@ -1,10 +1,10 @@
 <script setup>
-import { onActivated, onMounted, ref } from 'vue'
+import { onActivated, onMounted, ref, watch } from 'vue'
 import { Search2 } from '@nutui/icons-vue'
 import api from '@/utils/api'
 import { useUserStore } from '@/stores/user'
 import { useRouter, useRoute } from 'vue-router'
-import { IconThumbUp, IconMessage, IconDelete } from '@arco-design/web-vue/es/icon'
+import { IconThumbUp, IconMessage, IconDelete, IconPlus } from '@arco-design/web-vue/es/icon'
 import constants from '@/utils/constants'
 import { showDialog } from '@nutui/nutui'
 
@@ -41,8 +41,26 @@ const deleteArticle = (article) => {
   })
 }
 
-onMounted(() => {
+const follow = async () => {
+  try {
+    await api.updateFollow(uuid)
+    followData.value = await api.getFollowList()
+  } catch (error) {
+    showToast.fail('关注失败:', error)
+  }
+}
+
+const followData = ref([])
+const followees = ref([])
+
+onMounted(async () => {
   getArticles()
+  if (!myArticles && user.token)
+    followData.value = await api.getFollowList()
+})
+
+watch(() => followData.value, (follow) => {
+  followees.value = follow.followees.map(f => f.followee_id)
 })
 
 </script>
@@ -57,13 +75,33 @@ onMounted(() => {
     <template #rightin>
       <Search2 @click="getArticles" />
     </template>
-    <template #rightout v-if="myArticles">
+    <template #rightout>
       <NutButton
         type="danger"
         size="mini"
         @click="router.push('/new-article')"
+        v-if="myArticles"
       >
         发布文章
+      </NutButton>
+      <NutButton
+        type="info"
+        size="mini"
+        v-else-if="user.token && !followees.includes(uuid)"
+        @click="follow()"
+      >
+        <template #icon>
+          <IconPlus />
+        </template>
+        关注
+      </NutButton>
+      <NutButton
+        type="danger"
+        size="mini"
+        v-else-if="user.token && followees.includes(uuid)"
+        @click="follow()"
+      >
+        取消关注
       </NutButton>
     </template>
   </NutSearchbar>

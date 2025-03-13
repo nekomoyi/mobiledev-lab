@@ -4,18 +4,21 @@ import AllArticles from './AllArticles.vue'
 import MyArticles from './MyArticles.vue'
 import MyComments from './MyComments.vue'
 import Profile from './Profile.vue'
-import { Find, Home, Comment, My } from '@nutui/icons-vue'
+import FollowArticles from './FollowArticles.vue'
+import { Find, Home, Comment, My, Follow } from '@nutui/icons-vue'
 import { useRoute, useRouter } from 'vue-router'
 const tabItems = ref([
   { title: '所有文章', icon: h(Find), name: 'all-articles' },
   { title: '我的文章', icon: h(Home), name: 'my-articles' },
   { title: '我的评论', icon: h(Comment), name: 'my-comments' },
+  { title: '关注文章', icon: h(Follow), name: 'follow-articles' },
   { title: '个人信息', icon: h(My), name: 'profile' }
 ])
 const tabComponents = [
   AllArticles,
   MyArticles,
   MyComments,
+  FollowArticles,
   Profile
 ]
 

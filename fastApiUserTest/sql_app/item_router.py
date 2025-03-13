@@ -370,3 +370,34 @@ def create_read_log(
     if not db_item:
         raise HTTPException(status_code=404, detail="Item not found")
     return crud.update_read_log(db, item_id=item_id, uuid=uuid)
+
+@app.get("/user/follow", response_model=schemas.UserFollowDetail)
+def uesr_follow_detail(
+        db: Session = Depends(get_db),
+        auth_user: User = Depends(current_active_user)
+):
+    uuid:str=str(auth_user.id)
+    db_item = crud.get_user(db, uuid)
+    if not db_item:
+        return []
+    return db_item
+
+@app.put("/user/follow/{follow_id}", response_model=schemas.UserFollowDetail)
+def create_follow(
+        follow_id: str,
+        db: Session = Depends(get_db),
+        auth_user: User = Depends(current_active_user)
+):
+    uuid = str(auth_user.id)
+    crud.update_follow(db, followee_id=follow_id, follower_id=uuid)
+    u = crud.get_user(db, uuid)
+    return u
+
+@app.get("/user/follow/unread/", response_model=list[schemas.Item])
+def get_follow_unread(
+    db: Session = Depends(get_db),
+    auth_user: User = Depends(current_active_user)
+):
+    uuid = str(auth_user.id)
+    items = crud.get_follow_unread(db, uuid)
+    return items
