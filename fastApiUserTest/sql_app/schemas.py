@@ -163,3 +163,10 @@ class ItemDetail(Item):
     comments:list[CommentDetail]=[]
     class Config:
         from_attributes = True
+        
+class ReadLog(BaseModel):
+    item_id:int
+    owner_id:str
+    create_time:datetime.datetime
+    class Config:
+        from_attributes = True

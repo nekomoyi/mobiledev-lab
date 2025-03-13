@@ -22,6 +22,7 @@ class User(Base):# 所有对象表都要继承Base类
     modify_time=Column(DateTime)
     items = relationship("Item", back_populates="owner")
     comments=relationship("Comment",back_populates="owner")
+    read=relationship("ReadLog",back_populates="owner")
 
 
     def to_my_dict(self):
@@ -124,6 +125,22 @@ class Like(Base):
     item_id = Column(Integer, ForeignKey("items.id"))
     item = relationship("Item", back_populates="likes")
     owner_id = Column(String, ForeignKey("users.uuid"))
+    create_time = Column(DateTime)
+
+    def to_my_dict(self):
+        return my_model_dump(self, self)
+
+    def updateData(self, data: dict):
+        for key in data:
+            setattr(self, key, data[key])
+        return self
+    
+class ReadLog(Base):
+    __tablename__ = "read_logs"
+    id = Column(Integer, primary_key=True)
+    item_id = Column(Integer, ForeignKey("items.id"))
+    owner_id = Column(String, ForeignKey("users.uuid"))
+    owner = relationship("User", back_populates="read")
     create_time = Column(DateTime)
 
     def to_my_dict(self):

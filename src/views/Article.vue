@@ -25,8 +25,11 @@ const editMode = ref(false)
 const editor = ref(null)
 
 onMounted(async () => {
-  if (route.params.id)
+  if (route.params.id) {
     article.value = await api.getArticle(route.params.id)
+    if (user.token)
+      await api.addReadLog(route.params.id)
+  }
 })
 </script>
 

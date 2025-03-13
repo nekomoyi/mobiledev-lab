@@ -347,3 +347,26 @@ async def delete_comment(comment_id:int,
         return {'ack':f'Comment {comment_id} deleted'}
     except Exception as e:
         raise HTTPException(status_code=500,detail=str(e))
+    
+@app.get("/user/readlogs", response_model=list[schemas.ReadLog])
+def get_read_logs(
+        db: Session = Depends(get_db),
+        auth_user: User = Depends(current_active_user)
+):
+    uuid:str=str(auth_user.id)
+    db_item = crud.get_read_logs(db, uuid=uuid)
+    if not db_item:
+        return []
+    return db_item
+
+@app.put("/user/readlogs/{item_id}", response_model=schemas.ReadLog)
+def create_read_log(
+        item_id: int,
+        db: Session = Depends(get_db),
+        auth_user: User = Depends(current_active_user)
+):
+    uuid = str(auth_user.id)
+    db_item = crud.get_items_by_id(db, item_id)
+    if not db_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return crud.update_read_log(db, item_id=item_id, uuid=uuid)

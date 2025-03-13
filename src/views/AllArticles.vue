@@ -1,22 +1,24 @@
 <script setup>
-import { useLikeStore } from '@/stores/like'
 import { useRefreshStore } from '@/stores/refresh'
+import { useUserStore } from '@/stores/user'
 import api from '@/utils/api'
 import { usePersistentScroll } from '@/utils/scroll'
-import { showToast } from '@nutui/nutui'
 import { Search2 } from '@nutui/icons-vue'
-import { ref, onMounted, onActivated, onDeactivated, onUnmounted } from 'vue'
+import { ref, onMounted, onActivated, onDeactivated, onUnmounted, watch } from 'vue'
 
 const pagination = ref({
   limit: 5,
   offset: 0,
 })
 
+const user = useUserStore()
 const articles = ref([])
 const pullLoading = ref(false)
 const infinityLoading = ref(false)
 const hasMore = ref(true)
 const searchStr = ref('')
+const readLogs = ref([])
+const readId = ref([])
 
 const loadMore = async () => {
   const { limit, offset } = pagination.value
@@ -47,6 +49,8 @@ usePersistentScroll()
 onMounted(async () => {
   const { limit, offset } = pagination.value
   articles.value = await api.getArticles(offset, limit)
+  if (user.token)
+    readLogs.value = await api.getUserReadLogs()
 })
 
 const refresh = useRefreshStore()
@@ -69,8 +73,6 @@ onUnmounted(() => {
   clearInterval(autoRefreshTimer.value)
 })
 
-const like = useLikeStore()
-
 const star = async (id) => {
   let data = await api.starArticle(id)
   if (data.likes) {
@@ -78,6 +80,10 @@ const star = async (id) => {
     articles.value[idx] = data
   }
 }
+
+watch(readLogs, (newLogs) => {
+  readId.value = newLogs.map((log) => log.item_id)
+})
 </script>
 <template>
   <NutNavbar title="所有文章" />
@@ -100,6 +106,7 @@ const star = async (id) => {
         v-bind="a"
         class="m-3"
         @onStar="star"
+        :read="readId.includes(a.id) || !user.token"
       />
     </NutPullRefresh>
   </NutInfiniteLoading>

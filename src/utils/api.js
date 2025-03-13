@@ -213,5 +213,25 @@ export default {
     })
     let data = await resp.json()
     return data
-  }
+  },
+  getUserReadLogs: async () => {
+    let resp = await fetch(`${constants.ENDPOINT}/user/readlogs`, {
+      headers: {
+        'Authorization': useUserStore().token
+      }
+    })
+    let data = await resp.json()
+    return data
+  },
+  addReadLog: async (articleId) => {
+    let resp = await fetch(`${constants.ENDPOINT}/user/readlogs/${articleId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': useUserStore().token
+      }
+    })
+    let data = await resp.json()
+    return data
+  },
 }

@@ -273,3 +273,21 @@ def update_item_star(db:Session, item_id: int, uuid: str):
     db.commit()
     db.refresh(db_item)
     return db_item
+
+def get_read_logs(db:Session,uuid:str):
+    return db.query(models.ReadLog).filter(models.ReadLog.owner_id==uuid).order_by(models.ReadLog.create_time.desc()).all()
+
+def update_read_log(db:Session,uuid:str,item_id:int):
+    db_item = db.query(models.ReadLog).filter(models.ReadLog.owner_id==uuid).filter(models.ReadLog.item_id==item_id).first()
+    if db_item:
+        db_item.create_time=datetime.now()
+    else:
+        db_item = models.ReadLog(owner_id=uuid,item_id=item_id,create_time=datetime.now())
+        db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+def is_read(db:Session,uuid:str,item_id:int):
+    db_item = db.query(models.ReadLog).filter(models.ReadLog.owner_id==uuid).filter(models.ReadLog.item_id==item_id).first()
+    return True if db_item else False
